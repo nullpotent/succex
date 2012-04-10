@@ -1,0 +1,66 @@
+<?xml version="1.0">
+
+<engine width="800" height="600" bpp="32" fullscreen="false" fps="70" resources="Data/">
+</engine>
+
+<steeringBehaviors
+
+	SteeringForceTweaker		= "200.0"
+	SteeringForce 				= "2.0"
+	MaxSpeed 					= "150.0"
+	AgentMass					= "1.0"
+	AgentScale					= "1.0"
+	SeparationWeight			= "1.0"
+	AlignmentWeight				= "1.0"
+	CohesionWeight				= "2.0"
+	ObstacleAvoidanceWeight 	= "50.0"
+	WallAvoidanceWeight			= "50.0"
+	WanderWeight				= "1.0"
+	SeekWeight					= "1.0"
+	FleeWeight					= "1.0"
+	ArriveWeight				= "1.0"
+	PursuitWeight				= "1.0"
+	OffsetPursuitWeight			= "1.0"
+	InterposeWeight				= "1.0"
+	HideWeight					= "10.0"
+	EvadeWeight					= "10.01"
+	FollowPathWeight			= "0.05"
+	
+	ViewDistance				= "50.0"
+	ObDetectionBoxLength		= "40.0"
+	WallDetectionFeelerLengt 	= "40.0"
+	
+	WallAvoidancePr				= "0.5"
+	ObstacleAvoidancePr			= "0.5"
+	SeparationPr				= "0.2"
+	AlignmentPr					= "0.3"
+	CohesionPr					= "0.6"
+	WanderPr					= "0.8"
+	SeekPr						= "0.8"
+	FleePr						= "0.6"
+	EvadePr						= "1.0"
+	HidePr						= "0.8"
+	ArrivePr					= "0.5"
+	
+/>
+
+<font dir="Data/Fonts/" name="arial" size="11">
+
+</font>
+
+
+<font dir="Data/Fonts/" name="arial" size="9">
+
+</font>
+
+<font dir="Data/Fonts/" name="tahoma" size="16">
+
+</font>
+
+<font dir="Data/Fonts/" name="tahoma" size="20">
+
+</font>
+
+<font dir="Data/Fonts/" name="lsansdi" size="16">
+
+</font>

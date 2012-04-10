@@ -1,0 +1,66 @@
+#pragma once
+
+#include "Game/BaseGameEntity.h"
+#include "2D/Geometry.h"
+
+/*
+    Tests to see if an entity is overlapping any
+    of a number of entities stored in a std container
+*/
+template<class T, class conT>
+bool Overlapped(const T* ob, const conT& conOb, double minDistanceBetweenObstacles=40.0)
+{
+    typename conT::const_iterator it;
+
+    for(it=conOb.begin();it!=conOb.end();++it)
+    {
+        if(TwoCirclesOverlapped(ob->GetPos(),ob->GetBRadius()+minDistanceBetweenObstacles,(*it)->GetPos(),(*it)->GetBRadius()))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+/*
+    Tags any entities contained in a std container that
+    are within the radius of the single entity parameter
+*/
+template<class T, class conT>
+void TagNeighbours(T* entity, conT& others, const double radius)
+{
+    typename conT::iterator it;
+
+    for(it=others.begin();it!=others.end();++it)
+    {
+        (*it)->UnTag();
+        Vector2D to = (*it)->GetPos() - entity->GetPos();
+        double range = radius + (*it)->GetBRadius();
+
+        if(((*it) != entity) && (to.LengthSq() < range*range))
+        {
+            (*it)->Tag();
+        }
+    }
+}
+
+/*
+    Given a pointer to an entity and a std container of pointer
+    to nearby entites, this function checks to see if there is an overlap
+    between entities. If there is, then the entities are moved away from each other
+*/
+
+template<class T, class conT>
+void EnforceNonPenetrationConstraint(T entity, const conT& others)
+{
+    typename conT::const_iterator it;
+
+    for(it=others.begin();it!=others.end();++it)
+    {
+        if(*it == entity) continue;
+        Vector2D toEntity = entity->GetPos() - (*it)->GetPos();
+        double DistFromEachother = toEntity.Length();
+        
+        double amountOfOverlap = (*it)->GetBRadius() + entity->GetBRadius() - distFromEachother
+    }
+}

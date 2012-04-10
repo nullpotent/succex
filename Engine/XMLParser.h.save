@@ -1,0 +1,19 @@
+#pragma once
+
+#include "../Graphics/Font.h"
+
+struct EngineParams
+{
+    int width;
+    int height;
+    char bpp;
+    Uint32 fullscreen;
+    double fps;
+};
+
+class XMLParser
+{
+    EngineParams Parse
+    void ParseFonts();
+
+};

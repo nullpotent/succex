@@ -1,0 +1,14 @@
+#include "BaseGameEntity.h"
+
+BaseGameEntity::BaseGameEntity(int id) : boudingRadius_(0.0),
+                                         scale_(Vector2D(1.0,1.0)),
+                                         entityType_(default_ent_type),
+                                         tag_(false)
+{
+    SetID(id);
+}
+
+void BaseGameEntity::SetID(int val)
+{
+    Assert( (val >= nextValidID) && )
+}

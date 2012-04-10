@@ -1,0 +1,35 @@
+#include "XMLParser.h"
+
+XMLParser::XMLParser()
+{
+
+}
+
+XMLParser::XMLParser(std::string file)
+{
+   xml = createIrrXMLReader(file.c_str());
+}
+
+XMLParser::~XMLParser()
+{
+    delete xml;
+}
+
+EngineParams XMLParser::ParseEngineParams()
+{
+    EngineParams temp;
+
+    while(xml && xml->read())
+    {
+        switch(xml->getNodeType())
+        {
+            case EXN_ELEMENT:
+                if(!strcmp())
+        }
+    }
+}
+
+void XMLParser::ParseFonts()
+{
+
+}

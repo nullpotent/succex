@@ -1,0 +1,9 @@
+#pragma once
+
+/**
+    Description:
+    Inherit from this class to automatically create lists of 
+    similar objects. Whenever an object is created it will
+    
+
+*/

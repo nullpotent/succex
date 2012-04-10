@@ -1,0 +1,9 @@
+#include "EntityManager.h"
+
+EntityManager* EntityManager::Instance()
+{
+    static EntityManager instance;
+    return &instance;
+}
+
+BaseGameEntity* EntityManager::GetEntityFrom

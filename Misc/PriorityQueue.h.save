@@ -1,0 +1,209 @@
+#pragma once
+
+#include "Misc/Assert.h"
+#include "Misc/Utils.h"
+#include <ostream>
+#include <vector>
+
+
+template<class T>
+void ReorderUpwards(std::vector<T>& heap, int nd)
+{
+    while((nd>1) && (heap[nd/2] < heap[nd]))
+    {
+        Swap(heap[nd/2], heap[nd]);
+        nd /= 2;
+    }
+}
+
+template<class T>
+void ReorderDownwards(std::vector<T>& heap, int nd, int heapsize)
+{
+    while(2*nd <= heapsize)
+    {
+        int child = 2 * nd;
+
+        if((child < heapsize) && (heap[child] < heap[child+1]))
+        {
+            ++child;
+        }
+
+        if(heap[nd] < heap[child])
+        {
+            Swap(heap[child], heap[nd]);
+            nd = child;
+        }
+        else
+        {
+            break;
+        }
+    }
+}
+
+/**
+    2-way heap based priority queue. Highest value has the highest priority
+*/
+template<class T>
+class PriorityQ
+{
+    private:
+        std::vector<T> heap_;
+        int            size_;
+        int            maxSize_;
+
+        void ReorderUpwards(std::vector<T>& heap, int nd)
+        {
+            while((nd > 1) && (heap[nd/2] < heap[nd]))
+            {
+                Swap(heap[nd/2],heap[nd]);
+                nd /= 2;
+            }
+        }
+
+        void ReorderDownwards(std::vector<T>& heap, int nd, int heapsize)
+        {
+            while(2*nd <= heapsize)
+            {
+                int child = 2 * nd;
+
+                if((child < heapsize) && (heap[child] < heap[child+1]))
+                {
+                    ++child;
+                }
+
+                if(heap[nd] < heap[child])
+                {
+                    Swap(heap[child], heap[nd]);
+                    nd = child;
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+
+    public:
+
+        PriorityQ(int maxsize) : maxSize_(maxsize), size_(0)
+        {
+            heap_.assign(maxSize_+1,T());
+        }
+
+        bool Empty() const
+        {
+            return size_ == 0;
+        }
+
+        void Insert(const T elem)
+        {
+            Assert(size_+1 <= maxSize_);
+            ++size_;
+            heap_[size_] = elem;
+            ReorderUpwards(heap_,size_);
+        }
+
+        T Pop()
+        {
+            Swap(heap_[1],heap_[size_]);
+            ReorderDownwards(heap_, 1, size_-1);
+            return heap_[size--];
+        }
+
+        const T& Peek() const
+        {
+            return heap_[1];
+        }
+};
+
+/**
+    2-way heap al' prednost dobija onaj sa najmanjim prioritetom
+*/
+
+template<class T>
+class PriorityQL
+{
+    private:
+
+        std::vector<T> heap_;
+        int            size_;
+        int            maxSize_;
+
+        void ReorderUpwards(std::vector<T>& heap, int nd)
+        {
+            while((nd > 1) && (heap[nd/2] > heap[nd]))
+            {
+                Swap(heap[nd/2],heap[nd]);
+                nd /= 2;
+            }
+        }
+
+        void ReorderDownwards(std::vector<T>& heap, int nd, int heapsize)
+        {
+            while(2*nd <= heapsize)
+            {
+                int child = 2 * nd;
+
+                if((child < heapsize) && (heap[child] > heap[child+1]))
+                {
+                    ++child;
+                }
+
+                if(heap[nd] > heap[child])
+                {
+                    Swap(heap[child], heap[nd]);
+                    nd = child;
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+
+    public:
+
+        PriorityQL(int maxsize) : maxSize_(maxsize), size_(0)
+        {
+            heap_.assign(maxSize_+1,T());
+        }
+
+        bool Empty() const
+        {
+            return size_ == 0;
+        }
+
+        void Insert(const T elem)
+        {
+            Assert(size_+1 <= maxSize_);
+            ++size_;
+            heap_[size_] = elem;
+            ReorderUpwards(heap_,size_);
+        }
+
+        T Pop()
+        {
+            Swap(heap_[1],heap_[size_]);
+            ReorderDownwards(heap_, 1, size_-1);
+            return heap_[size--];
+        }
+
+        const T& Peek() const
+        {
+            return heap_[1];
+        }
+};
+
+/**
+    2-way heap based priority queue based on an index into a set of keys.
+    Prioritet ima element sa najmanjom vrednoscu.
+*/
+template<class TKeyType>
+class IndexedPriorityQL
+{
+    private:
+        std::vector<TKeyType>& vecKeys_;
+        std::vector<int>       heap_;
+        std::vector<int>       invHeap_;
+        int                     si
+}

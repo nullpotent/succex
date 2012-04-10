@@ -1,0 +1,128 @@
+#pragma once
+#include "../Graphics/GLCalls.h"
+#include "Vector2D.h"
+#include <fstream>
+
+//Klasa koja opisuje i renderuje 2D zid definisan sa A (pocetak), B(kraj) i N (normala) vektorima.
+class Wall2D
+{
+    protected:
+
+        Vector2D vA_;
+        Vector2D vB_;
+        Vector2D vN_;
+        float thickness_;
+
+        void FindNormal()
+        {
+            Vector2D fromTo = Vec2DNormalize(vB_ - vA_);
+            vN_.x_ = -fromTo.y_;
+            vN_.y_ = fromTo.x_;
+        }
+
+    public:
+
+        Wall2D()
+        {
+
+        }
+
+        Wall2D(Vector2D  a, Vector2D b, float thickness = 1.0) : vA_(a), vB_(b), thickness_(thickness)
+        {
+            FindNormal();
+        }
+
+        Wall2D(Vector2D a, Vector2D b, Vector2D n, float thickness) : vA_(a), vB_(b), vN_(n), thickness_(thickness)
+        {
+
+        }
+
+        Wall2D(std::ifstream& in)
+        {
+            Read(in);
+        }
+
+        Vector2D From() const
+        {
+            return vA_;
+        }
+
+        void SetFrom(Vector2D v)
+        {
+            vA_ = v;
+            FindNormal();
+        }
+
+        Vector2D To() const
+        {
+            return vB_;
+        }
+
+        void SetTo(Vector2D v)
+        {
+            vB_ = v;
+            FindNormal();
+        }
+
+        Vector2D Normal() const
+        {
+            return vN_;
+        }
+
+        void SetNormal(Vector2D n)
+        {
+            vN_ = n;
+        }
+
+        Vector2D Center() const
+        {
+            return (vA_ + vB_) / 2.0;
+        }
+
+        void SetThickness(float t)
+        {
+            thickness_ = t;
+        }
+
+        float GetThickness()
+        {
+            return thickness_;
+        }
+
+        std::ostream& Write(std::ostream& os) const
+        {
+            os<<std::endl;
+            os<<From()<<",";
+            os<<To()<<",";
+            os<<Normal();
+            return os;
+        }
+
+        void Read(std::ifstream& in)
+        {
+            double x,y;
+
+            in >> x >> y;
+            SetFrom(Vector2D(x,y));
+
+            in >> x >> y;
+            SetTo(Vector2D(x,y));
+
+            in >> x >> y;
+            SetNormal(Vector2D(x,y));
+        }
+
+        virtual void Render(bool renderNormals = false) const
+        {
+            glLineWidth(thickness_);
+            Graphics::DrawLine(vA_.x_,vA_.y_,vB_.x_,vB_.y_);
+            
+            if(renderNormals)
+            {
+                int midX = (int)((vA_.x_ + vB_.x_)/2);
+                int midY = (int)((vA))
+            }
+        
+        }
+};
+

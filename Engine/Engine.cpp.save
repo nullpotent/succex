@@ -1,0 +1,371 @@
+#include "Engine.h"
+#include "Misc/Assert.h"
+
+Engine *Engine::engine_ = NULL;
+
+Engine::Engine() :
+    endProcess_ ( false ),
+    perspectiveRatio_ ( 0 ),
+    name_ ( "" ),
+    posX_ ( 0 ),
+    posY_ ( 0 ),
+    bits_ ( 16 ),
+    width_ ( 640 ),
+    height_ ( 480 ),
+    active_ ( true ),
+    screen_ ( NULL ),
+    videoFlags_ ( 0 ),
+    sdlFlags_ ( 0 ),
+    showFPS_(true),
+    timer_ ( NULL ),
+    fullscreen_(false),
+    mainDir_("Data/")
+{
+}
+
+Engine::~Engine()
+{
+    Destroy();
+}
+
+bool Engine::Instantiate ()
+{
+    engine_ = new Engine( );
+    return engine_ != NULL;
+}
+
+Engine* Engine::Instance()
+{
+    Assert ( engine_ != NULL );
+    return engine_;
+}
+
+void Engine::Update(double elapsedTime)
+{
+    //create a smoother to smooth the framerate
+    const int SampleRate = 10;
+    static Smoother<double> FrameRateSmoother(SampleRate, 0.0);
+
+    fps_ = FrameRateSmoother.Update(elapsedTime);
+
+    ModuleManager::Instance()->UpdateModules(elapsedTime);
+}
+
+void Engine::Resize(unsigned int width, unsigned int height)
+{
+    this->width_ 	= width;
+    this->height_ 	= height;
+
+    if(height_ == 0)
+    {
+        height_ = 1;
+    }
+
+    glViewport(0, 0, width_, height_);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+
+    glOrtho(0.0f, width_, height_, 0.0f, -1.0f, 1.0f);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+}
+
+bool Engine::SetupGL()
+{
+    glClearColor(0.0f, 0.0f, 0.0f, 1.f);
+    glHint(GL_LINE_SMOOTH_HINT, GL_NICEST); //anti aliasing
+    glShadeModel(GL_SMOOTH);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_ALPHA_TEST);
+    glAlphaFunc(GL_GREATER, 0.1f);
+
+    glDisable ( GL_DEPTH_TEST );
+
+    if(glGetError() != GL_NO_ERROR)
+    {
+        std::cout << glGetError() << std::endl;
+        return false;
+    }
+    return true;
+}
+
+void Engine::SetupGLAttributes()
+{
+    int rgb_size[3];
+
+    switch(bits_)
+    {
+    case 8:
+        rgb_size[0] = 3;
+        rgb_size[1] = 3;
+        rgb_size[2] = 2;
+        break;
+    case 15:
+    case 16:
+        rgb_size[0] = 5;
+        rgb_size[1] = 5;
+        rgb_size[2] = 5;
+        break;
+    default:
+        rgb_size[0] = 8;
+        rgb_size[1] = 8;
+        rgb_size[2] = 8;
+        break;
+    }
+
+    SDL_GL_SetAttribute ( SDL_GL_RED_SIZE, rgb_size[0] );
+    SDL_GL_SetAttribute ( SDL_GL_GREEN_SIZE, rgb_size[1] );
+    SDL_GL_SetAttribute ( SDL_GL_BLUE_SIZE, rgb_size[2] );
+
+    SDL_GL_SetAttribute ( SDL_GL_DOUBLEBUFFER, 1 );
+    SDL_GL_SetAttribute ( SDL_GL_DEPTH_SIZE, 0 ); //No Z-buffer
+    SDL_GL_SetAttribute ( SDL_GL_BUFFER_SIZE, 32 ); //RGBA
+
+    SDL_GL_SetAttribute( SDL_GL_MULTISAMPLESAMPLES, 1 );
+    SDL_GL_SetAttribute( SDL_GL_ACCELERATED_VISUAL, 1 );
+
+
+}
+
+bool Engine::InitializeGLContext()
+{
+    SetupGLAttributes();
+    Assert(SetupGL() && "OpenGL initialized");
+    //bitan je redosled
+    XMLParser::Instance()->ParseFonts();
+    tahomaFont_ = FontManager::Instance()->GetByName("tahoma16");
+}
+
+bool Engine::Initialize()
+{
+    Info();
+
+    if(ModuleManager::Instantiate())
+    {
+        std::cout<<"ModuleManager initialized"<<std::endl;
+    }
+    else
+    {
+        std::cout<<"ModuleManager initialization failed"<<std::endl;
+        return false;
+    }
+
+    if(FontManager::Instantiate())
+    {
+        std::cout<<"FontManager initialized"<<std::endl;
+    }
+    else
+    {
+        std::cout<<"FontManager initialization failed"<<std::endl;
+        return false;
+    }
+
+    XMLParser::Instance()->ParseFonts();
+
+    return true;
+}
+
+void Engine::Render()
+{
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    ModuleManager::Instance()->RenderModules();
+
+    if(showFPS_)
+    {
+        Graphics::SetColor ( COLOR_WHITE );
+        Graphics::DrawText ( tahomaFont_, 0, 0, "FPS: %f",1.0/fps_);
+    }
+}
+
+void Engine::Info()
+{
+    int value;
+
+    std::cout << "Screen BPP: " << (int)SDL_GetVideoSurface()->format->BitsPerPixel << std::endl;
+    std::cout << "Vendor: " << glGetString(GL_VENDOR) << std::endl;
+    std::cout << "Renderer: " << glGetString(GL_RENDERER) << std::endl;
+    std::cout << "Version: " << glGetString(GL_VERSION) << std::endl;
+    std::cout << "Extensions " << glGetString(GL_EXTENSIONS) << std::endl;
+    std::cout << std::endl << std::endl;
+
+    SDL_GL_GetAttribute ( SDL_GL_DOUBLEBUFFER, &value );
+    std::cout << "Doublebuffer: " << value << std::endl;
+
+    SDL_GL_GetAttribute ( SDL_GL_ACCELERATED_VISUAL, &value );
+    std::cout << "Acceleration: " << value << std::endl;
+
+    SDL_GL_GetAttribute ( SDL_GL_MULTISAMPLEBUFFERS, &value );
+    std::cout << "GL_MULTISAMPLEBUFFERS: " << value << std::endl;
+
+    SDL_GL_GetAttribute ( SDL_GL_MULTISAMPLESAMPLES, &value );
+    std::cout << "GL_MULTISAMPLESAMPLES: " << value << std::endl;
+}
+
+bool Engine::Create(std::string title,
+                    short int width,
+                    short int height,
+                    char bits,
+                    Uint32 sdlFlags,
+                    Uint32 videoFlags,
+                    double fps,
+                    bool fullscreen,
+                    std::string maindir)
+{
+
+    Assert ( width > 0 );
+    Assert ( height > 0 );
+    Assert ( bits > 8 );
+    Assert ( title != "" ); //I think it should work
+
+
+    videoFlags_ = videoFlags;
+    sdlFlags_   = sdlFlags;
+    width_      = width;
+    height_     = height;
+    name_       = title;
+    bits_       = bits;
+    fullscreen_ = fullscreen;
+    mainDir_    = maindir;
+
+    if (SDL_Init(sdlFlags_) < 0)
+    {
+        std::cout << "Couldn't initialize SDL - " << SDL_GetError() << std::endl;
+        return false;
+    }
+
+    SetupGLAttributes();
+
+    if(SDL_SetVideoMode(width_, height_, bits_, videoFlags_) == NULL)
+    {
+        std::cout << "Couldn't set GL mode >> " << SDL_GetError() << std::endl;
+        SDL_Quit();
+        return false;
+    }
+
+    SDL_WM_SetCaption ( name_.c_str( ) , NULL );
+
+    Assert(SetupGL() && "OpenGL initialization");
+    std::cout<<"OpenGL initialized"<<std::endl;
+
+    if(!Initialize())
+    {
+        return false;
+    }
+
+    SDL_EnableUNICODE(1);
+    std::cout<<"INTERVAL: "<<SDL_DEFAULT_REPEAT_DELAY<<" "<<SDL_DEFAULT_REPEAT_INTERVAL<<std::endl;
+    SDL_EnableKeyRepeat(1,1);
+
+    Resize(width_, height_);
+
+    screen_ = SDL_GetVideoSurface();
+
+    if(fullscreen_)
+        ToggleFullscreen();
+
+    tahomaFont_ = FontManager::Instance()->GetByName("tahoma16");
+
+    timer_ = new PrecisionTimer(fps);
+    timer_->SmoothUpdatesOn();
+    timer_->Start();
+
+    return true;
+}
+
+void Engine::ToggleFullscreen()
+{
+    static Uint32 toggle;
+
+    if(fullscreen_)
+        toggle = SDL_FULLSCREEN;
+    else
+        toggle = 0x00;
+
+    SDL_SetVideoMode(width_, height_, bits_, videoFlags_ | toggle);
+
+    InitializeGLContext();
+    Resize(width_, height_);
+}
+
+void Engine::Run()
+{
+    while(!endProcess_)
+    {
+        if(timer_->ReadyForNextFrame())
+        {
+            Update(timer_->TimeElapsed());
+        }
+
+        Render();
+        SDL_GL_SwapBuffers();
+        while(SDL_PollEvent(&event_))
+        {
+            switch(event_.type)
+            {
+            case SDL_ACTIVEEVENT:
+            {
+                if (event_.active.gain == 0)
+                {
+                    active_ ^= true;
+                }
+                break;
+            }
+            case SDL_VIDEORESIZE:
+            {
+                screen_ = SDL_SetVideoMode(
+                              event_.resize.w,
+                              event_.resize.h,
+                              bits_, videoFlags_
+                          );
+
+                Resize (event_.resize.w, event_.resize.h);
+                width_  = event_.resize.w;
+                height_ = event_.resize.h;
+                break;
+            }
+            case SDL_KEYDOWN:
+            {
+                if(event_.key.keysym.sym == SDLK_F1)
+                {
+                    fullscreen_ ^= true;
+                    ToggleFullscreen();
+                }
+                else if(event_.key.keysym.sym == SDLK_F2)
+                {
+                    showFPS_ ^= true;
+                }
+                else if(event_.key.keysym.sym == SDLK_F3)
+                {
+                    ModuleManager::Instance()->ActivateNext();
+                }
+                else if(event_.key.keysym.sym == SDLK_ESCAPE)
+                {
+                    endProcess_ = true;
+                }
+                break;
+            }
+            case SDL_QUIT:
+            {
+                endProcess_ = true;
+                break;
+            }
+            }
+            ModuleManager::Instance()->HandleEvents(&event_);
+        }
+    }
+}
+
+void Engine::Destroy( )
+{
+    std::cout << "Engine shutting down" << std::endl;
+
+    delete timer_;
+    delete ModuleManager::Instance();
+    delete FontManager::Instance();
+    delete tahomaFont_;
+    SDL_FreeSurface(screen_);
+    SDL_Quit();
+}
+

@@ -1,0 +1,73 @@
+#include "ModuleManager.h"
+#include "../Modules/GameModule.h"
+
+ModuleManager* ModuleManager::mManager_ = NULL;
+
+ModuleManager::ModuleManager()
+{
+    Initialize();
+}
+
+ModuleManager::~ModuleManager()
+{
+    std::cout << "ModuleManager down" << std::endl;
+}
+
+ModuleManager* ModuleManager::Instance()
+{
+    Assert ( mManager_ != NULL );
+    return mManager_;
+}
+
+void ModuleManager::RenderModules()
+{
+    DestroyModules();
+    GameModulesList::iterator it = moduleList_.begin();
+    GameModulesList::iterator itEnd = moduleList_.end();
+    while (it != itEnd)
+    {
+        if((*it)->IsActive())
+            (*it)->RenderModule();
+        it++;
+    }
+}
+
+void ModuleManager::HandleEvents(SDL_Event* event)
+{
+    if(event->key.keysym.sym<NUMKEYS)
+      keys_[event->key.keysym.sym] = !keys_[event->key.keysym.sym];
+
+    DestroyModules();
+    GameModulesList::iterator it = moduleList_.begin();
+    GameModulesList::iterator itEnd = moduleList_.end();
+    while (it != itEnd)
+    {
+        if((*it)->IsActive())
+            (*it)->HandleEvents();
+        it++;
+    }
+    void ModuleManager::UpdateModules(double elapsedTime_)
+{
+    DestroyModules();
+    GameModulesList::iterator it = moduleList_.begin();
+    GameModulesList::iterator itEnd = moduleList_.end();
+    while (it != itEnd)
+    {
+        if((*it)->IsActive())
+            (*it)->UpdateModule(elapsedTime_);
+        it++;
+    }
+}
+bool ModuleManager::Instantiate()
+{
+    mManager_ = new ModuleManager();
+    return mManager_ != NULL;
+}
+
+void ModuleManager::Initialize()
+{
+    for(int i=0;i<NUMKEYS;++i)
+    {
+        keys_[i] = false;
+    }
+}

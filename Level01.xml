@@ -1,0 +1,121 @@
+<?xml version="1.0">
+
+<world name="First Level">
+
+	<player
+		PositionX	= "150.0"
+		PositionY 	= "150.0"
+		Rotation	= "1.0"
+		VelocityX	= "0.0"
+		VelocityY	= "0.000001"
+		ForceX		= "0.0"
+		ForceY		= "0.0"
+		Mass		= "2.0"
+		MaxForce	= "400.0"
+		MaxSpeed	= "250.0"
+		MaxTurnRate	= "0.1"
+		Scale		= "14.0"
+		Bullets		= "1"
+	/>
+			
+		<enemy
+			PositionX 		= "580.0"
+			PositionY 		= "250.0"
+			Rotation		= "1.0"
+			Steering		= "Pursuit"
+			VelocityX		= "0.0"
+			VelocityY 		= "0.0"
+			Mass			= "1.0"
+			MaxForce		= "400.0"
+			MaxSpeed		= "150.0"
+			Scale			= "12.0"
+			MaxTurnRate		= "3.14"
+			Type  			= "Leader"				
+		/>
+
+		<enemy
+			PositionX 		= "260.0"
+			PositionY 		= "420.0"
+			Rotation		= "1.0"
+			Steering		= "Hide"
+			VelocityX		= "0.0"
+			VelocityY 		= "0.0"
+			Mass			= "5.0"
+			MaxForce		= "400.0"
+			MaxSpeed		= "150.0"
+			Scale			= "10.0"
+			MaxTurnRate		= "3.14"		
+			Type  			= "None"	
+		/>
+
+
+		<enemy
+			PositionX 		= "580.0"
+			PositionY 		= "350.0"
+			Rotation		= "1.0"
+			Steering		= "OffsetPursuit"
+			VelocityX		= "0.0"
+			VelocityY 		= "0.0"
+			Mass			= "1.0"
+			MaxForce		= "400.0"
+			MaxSpeed		= "150.0"
+			Scale			= "12.0"
+			MaxTurnRate		= "3.14"		
+			Type  			= "None"
+		/>
+		
+		<enemy
+			PositionX 		= "580.0"
+			PositionY 		= "450.0"
+			Rotation		= "1.0"
+			Steering		= "OffsetPursuit"
+			VelocityX		= "0.0"
+			VelocityY 		= "0.0"
+			Mass			= "1.0"
+			MaxForce		= "400.0"
+			MaxSpeed		= "150.0"
+			Scale			= "12.0"
+			MaxTurnRate		= "3.14"	
+			Type  			= "None"		
+		/>		
+		
+		<obstacle
+			X = "190.0"
+			Y = "400.0"
+			Radius = "50.0"
+		/>
+		
+		<obstacle
+			X = "290.0"
+			Y = "190.0"
+			Radius = "30.0"
+		/>
+		
+		<obstacle
+			X = "467.0"
+			Y = "270.0"
+			Radius = "60.0"
+		/>
+		
+		<obstacle
+			X = "190.0"
+			Y = "180.0"
+			Radius = "30.0"
+		/>
+		
+		<obstacle
+			X = "590.0"
+			Y = "200.0"
+			Radius = "20.0"
+		/>
+	
+	<walls>
+	</walls>
+	
+	<!--
+		<regions>
+		</regions>
+		<balls>
+		</balls>
+	-->
+</world>

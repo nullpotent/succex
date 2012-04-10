@@ -1,0 +1,72 @@
+#pragma once
+
+#include "2D/Vector2D.h"
+#include "Graphics/GLCalls.h"
+#include "Graphics/GraphicsUtils.h"
+
+class Particle
+{
+    protected:
+
+        Vector2D                velocity_;
+        Vector2D                position_;
+        double                  angle_;
+        double                  angularVel_;
+        rgb_struct<float>       color_;
+        double                  size_;
+        int                     ttl_;
+
+    public:
+
+        const Vector2D              GetVelocity()   const { return velocity_;   }
+        const Vector2D              GetPosition()   const { return position_;   }
+        const double                GetAngle()      const { return angle_;      }
+        const double                GetAngularVel() const { return angularVel_; }
+        const rgb_struct<float>     GetColor()      const { return color_;      }
+        const double                GetSize()       const { return size_;       }
+        const int                   GetTTL()        const { return ttl_;        }
+
+        void SetVelocity(Vector2D newVel)               { velocity_       = newVel;   }
+        void SetPosition(Vector2D newPos)               { position_       = newPos;   }
+        void SetAngle(double newAngle)                  { angle_          = newAngle; }
+        void SetAngularVelocity(double angVel)          { angularVel_     = angVel;   }
+        void SetColor(rgb_struct<float> newCol)         { color_          = newCol;   }
+        void SetSize(double newSize)                    { size_           = newSize;  }
+        void SetTTL(int newTTL)                         { ttl_            = newTTL;   }
+
+        Particle(Vector2D pos,
+                 Vector2D vel,
+                 double angle,
+                 double angVel,
+                 rgb_struct<float> color,
+                 double size,
+                 int ttl) : position_(pos),
+                            velocity_(vel),
+                            angle_(angle),
+                            angularVel_(angVel),
+                            color_(color),
+                            size_(size),
+                            ttl_(ttl)
+        {
+
+        }
+
+        ~Particle()
+        {
+
+        }
+
+        void Update(double elapsedTime)
+        {
+            ttl_--;
+            position_ += velocity_ + Vec2DNormalize(Vector2D(sin(ttl_*angle_),-cos(ttl_*angle_)));
+            angle_    += angularVel_;
+        }
+
+        void Render()
+        {
+            double dO = size_ / 2;
+            glColor3f(color_.r,color_.g,color_.b);
+            Graphics::DrawRectFilled(position_.x_ - dO, position_.y_ - dO, position_.x_ + dO, position_.y_ + dO);
+        }
+};

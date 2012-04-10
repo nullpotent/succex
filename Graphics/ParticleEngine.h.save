@@ -1,0 +1,79 @@
+#pragma once
+#include "Particle.h"
+#include <list>
+#include "Misc/Utils.h"
+
+#define TOTAL 100
+
+typedef std::deque<Particle*> ParticlesList;
+
+class ParticleEngine
+{
+    private:
+
+        Vector2D            emitterPos_;
+        ParticlesList       particles_;
+
+    public:
+
+        ParticleEngine(Vector2D emPos) : emitterPos_(emPos)
+        {
+        }
+
+        void Update(double elapsedTime)
+        {
+            for(int i=0; i < TOTAL; ++i)
+            {
+                particles_.push_back(GenerateNewParticle());
+            }
+
+
+            ParticlesList::iterator it = particles_.begin();
+            ParticlesList::iterator itEnd = particles_.end();
+
+            while(it!=itEnd)
+            {
+                (*it)->Update(elapsedTime);
+                if((*it)->GetTTL()<=0)
+                {
+                    particles_.erase(it);
+                }
+            }
+        }
+
+
+    private:
+
+        Particle*   GenerateNewParticle()
+        {
+            Vector2D pos = emitterPos_;
+            Vector2D vel = Vector2D(1.0 * RandInRange(1.0,10.0) * 2 - 1,
+                                    1.0 * RandInRange(1.0,10.0) * 2 - 1);
+            double angle = 0;
+            double angV = 0.1f * RandInRange(1.0,10.0) * 2 - 1;
+            rgb_struct<float> color =;
+
+            color.r = RandInRange(0.0,1.0);
+            color.b = RandInRange(0.0,1.0);
+            color.g = RandInRange(0.0,1.0);
+
+            double size = RandInRange(0.0,10.0);
+
+            int ttl = 20 + RandInRange(0.0,40.0);
+
+            return new Particle(pos,vel,angle,angV,color,size,ttl);
+        }
+
+    public:
+
+        void Render()
+        {
+            ParticlesList::iterator it = particles_.begin();
+            ParticlesList::iterator itEnd = particles_.end();
+
+            while(it!=itEnd)
+            {
+                (*it)->Render();
+            }
+        }
+};

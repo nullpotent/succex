@@ -1,0 +1,25 @@
+#pragma once
+
+#include "Vector2D.h"
+#include "../Graphics/GLCalls.h"
+
+class IBBox2D
+{
+    private:
+
+        Vector2D topLeft_;
+        Vector2D botRight_;
+        Vector2D center_;
+
+    public:
+
+        IBBox2D(Vector2D tl, Vector2D br) :
+                                            topLeft_(tl),
+                                            botRight_(br),
+                                            center_((tl+br)/2.0);
+        {
+
+        }
+        
+        bool OverlappesWith(const )
+}

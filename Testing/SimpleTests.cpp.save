@@ -1,0 +1,62 @@
+#include "SimpleTests.h"
+
+using namespace TestingModuleNS;
+
+TestModule::TestModule(const std::string& name) :
+    timeAcc_ ( 0.0f )
+{
+    name_ = name;
+    std::cout << "GameModule " << name_ << " initialized" << std::endl;
+    Initialize();
+}
+
+TestModule::~TestModule()
+{
+    Destroy();
+}
+
+void TestModule::Initialize()
+{
+    wall = Wall2D(Vector2D(30,100),Vector2D(150,100));
+}
+
+void TestModule::Destroy()
+{
+    std::cout << "GameModule " << name_ << " down" << std::endl;
+}
+
+void TestModule::ProcessModule()
+{
+    wall.Render(true);
+}
+
+void TestModule::ProcessEvent(SDL_Event* event)
+{
+    switch (event->type)
+    {
+    case SDL_MOUSEBUTTONDOWN:
+    {
+        if(event->button.button == 4)
+        {
+
+        }
+        else if(event->button.button == 5)
+        {
+
+        }
+
+        break;
+    }
+    case SDL_KEYDOWN:
+    {
+        if(event->key.keysym.sym == SDLK_UP)
+        {
+            wall.SetFrom(wall.From()++)
+        }
+    }
+
+    }
+}
+
+
+

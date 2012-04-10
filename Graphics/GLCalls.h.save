@@ -1,0 +1,17 @@
+#pragma once
+#include <SDL/SDL_opengl.h>
+#include <SDL/SDL_image.h>
+#include "Font.h"
+#include "Misc/Assert.h"
+#include "GraphicsUtils.h"
+
+namespace Graphics
+{
+const void DrawLine(int x1, int y1, int x2, int y2);
+const void DrawRectf(int left, int top, int right, int bottom);
+const void DrawRect
+const void DrawText(const Font* fnt, int x, int y, const char *str, ...);
+const void DrawText(const Font* fnt, int x, int y, const std::string& str);
+const void SetColor(int r, int g, int b, int a);
+const void SetColor(int r, int g, int b);
+}

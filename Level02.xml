@@ -1,0 +1,66 @@
+<?xml version="1.0">
+
+<world name="Second level">
+
+	<player
+		PositionX	= "20.0"
+		PositionY 	= "20.0"
+		Rotation	= "1.0"
+		VelocityX	= "0.0"
+		VelocityY	= "0.000001"
+		ForceX		= "0.0"
+		ForceY		= "0.0"
+		Mass		= "2.0"
+		MaxForce	= "400.0"
+		MaxSpeed	= "250.0"
+		MaxTurnRate	= "0.1"
+		Scale		= "10.0"
+		Bullets		= "1"
+	/>
+
+		<enemy
+			PositionX 		= "260.0"
+			PositionY 		= "420.0"
+			Rotation		= "1.0"
+			Steering		= "Seek"
+			VelocityX		= "0.0"
+			VelocityY 		= "0.0"
+			Mass			= "1.0"
+			MaxForce		= "400.0"
+			MaxSpeed		= "150.0"
+			Scale			= "16.0"
+			MaxTurnRate		= "3.14"	
+			Type 			= "None"
+		/>
+		
+		<enemy
+			PositionX 		= "80.0"
+			PositionY 		= "200.0"
+			Rotation		= "1.0"
+			Steering		= "Seek"
+			VelocityX		= "0.0"
+			VelocityY 		= "0.0"
+			Mass			= "1.0"
+			MaxForce		= "400.0"
+			MaxSpeed		= "150.0"
+			Scale			= "16.0"
+			MaxTurnRate		= "3.14"
+			Type 			= "None"			
+		/>
+
+		<obstacle
+			X = "190.0"
+			Y = "600.0"
+			Radius = "20.0"
+		/>		
+	
+	<walls>
+	</walls>
+	
+	<!--
+		<regions>
+		</regions>
+		<balls>
+		</balls>
+	-->
+</world>

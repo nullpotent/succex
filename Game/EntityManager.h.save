@@ -1,0 +1,13 @@
+#pragma once
+#pragma warning(disable:4786)
+
+#include <map>
+#include "Misc/Assert.h"
+
+class BaseGameEntity;
+
+class EntityManager
+{
+    private:
+        typedef std::map<int, BaseGameEntity*> Entit
+}

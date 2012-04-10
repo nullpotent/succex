@@ -1,0 +1,45 @@
+#include "GameModule.h"
+#include <iostream>
+
+
+GameModule::GameModule()
+{
+    name_ = "";
+    active_ = false;
+}
+
+GameModule::~GameModule()
+{
+    Destroy();
+}
+
+GameModule::GameModule(bool active) : 
+{
+}
+
+void GameModule::Destroy()
+{
+
+}
+
+void GameModule::Initialize()
+{
+    //REDEFINE
+}
+
+void GameModule::ProcessEvent(SDL_Event* event)
+{
+
+}
+
+void GameModule::RenderModule()
+{
+
+}
+
+void GameModule::UpdateModule(double elapsedTime)
+{
+
+}
+
+
